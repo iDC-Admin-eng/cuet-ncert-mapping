@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT JAM Economics 2026 - Study Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* A slightly lighter slate background */
+        }
+        .view {
+            display: none; /* All views are hidden by default */
+        }
+        #mainChartView {
+            display: block; /* The main chart is visible on load */
+        }
+        canvas {
+            cursor: pointer;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">IIT JAM Economics 2026</h1>
+            <p class="text-lg text-slate-600 mt-2">Interactive Drill-Down Dashboard</p>
+        </header>
+
+        <!-- Main View: Subject Weightage Chart -->
+        <div id="mainChartView" class="view bg-white p-6 rounded-2xl shadow-lg">
+             <h2 class="text-2xl font-bold text-center mb-4 text-slate-900">Subject-wise Weightage (JAM 2025)</h2>
+            <div class="relative h-96">
+                <canvas id="weightageChart"></canvas>
+            </div>
+             <p class="text-center text-sm text-slate-500 mt-4">Click on a bar to see the topic-wise breakdown.</p>
+        </div>
+
+        <!-- Topic View: Topic-wise Charts -->
+        <div id="topicChartView" class="view bg-white p-6 rounded-2xl shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <button id="backToMainBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg transition-colors">&larr; Back to Subjects</button>
+                <h2 id="topicChartHeader" class="text-2xl font-bold text-center text-slate-900"></h2>
+            </div>
+            <div id="topicChartContainer" class="relative h-96">
+                <!-- Canvases for topic charts will be dynamically shown here -->
+                <canvas id="microTopicChart" class="topic-chart"></canvas>
+                <canvas id="statsTopicChart" class="topic-chart"></canvas>
+                <canvas id="macroTopicChart" class="topic-chart"></canvas>
+                <canvas id="indianEcoTopicChart" class="topic-chart"></canvas>
+                <canvas id="mathTopicChart" class="topic-chart"></canvas>
+            </div>
+            <p class="text-center text-sm text-slate-500 mt-4">Click on a bar to see relevant PYQs.</p>
+        </div>
+
+        <!-- PYQ View: Detailed PYQ Lists -->
+        <div id="pyqDetailView" class="view bg-white p-6 rounded-2xl shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                 <button id="backToTopicBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg transition-colors">&larr; Back to Topics</button>
+                <h2 id="pyqHeader" class="text-2xl font-bold text-center text-slate-900"></h2>
+            </div>
+            <div id="pyqListContainer" class="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+                <!-- PYQ details will be dynamically shown here -->
+            </div>
+        </div>
+
+        <!-- Data block for PYQs (hidden) -->
+        <div id="pyqData" class="hidden">
+            <!-- Microeconomics Data -->
+            <div data-topic="Consumer Theory">
+                <p><strong>Primary Book:</strong> Hal Varian, Chapters 2-8, 15.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-blue-100">
+                    <div class="pt-2"><p><strong>Q.21 (MCQ):</strong> Concept of Quasi-linear utility functions (U = y + f(x)).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 4 (Utility), Section 4.4 "Quasilinear Utility".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.22 (MCQ):</strong> Definition of an Engel curve.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 6 (Demand), Section 6.2 "Engel Curves".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.23 (MCQ):</strong> Purpose of Revealed Preference theory.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 7 (Revealed Preference), introduction and Section 7.2 "The Weak Axiom of Revealed Preference".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.29 (MCQ):</strong> Indifference curve for a 'good' and a 'bad'.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 3 (Preferences), Section 3.4 covers "Bads", showing positively sloped indifference curves.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.30 (MCQ):</strong> Definition of Marginal Utility.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 4 (Utility), Section 4.2 "Marginal Utility".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.50 (NAT):</strong> Utility maximization with a Cobb-Douglas utility function (U=xy).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 5 (Choice). The core concept is the tangency condition (MRS = Price Ratio), which is the main subject of this chapter.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.57 (NAT):</strong> Calculating price elasticity from a demand function.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 15 (Market Demand), Section 15.2 "Elasticity". This question requires applying the formula ε = (dQ/dP) * (P/Q).</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Market Structure">
+                <p><strong>Primary Book:</strong> Hal Varian, Chapters 16, 23-26.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-blue-100">
+                    <div class="pt-2"><p><strong>Q.5 (MCQ):</strong> Shut-down condition for a perfectly competitive firm.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 23 (Firm Supply), Section 23.3 "The Shutdown Condition".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.6 (MCQ):</strong> Characteristics of a natural monopoly.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 25 (Monopoly), Section 25.7 "Natural Monopoly". Characterized by high fixed costs and declining average costs.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.24 (MCQ):</strong> Short-run and Long-run equilibrium in monopolistic competition.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 26 (Monopolistic Competition), Sections 26.2 and 26.3 cover short-run (profits possible) and long-run (zero profit) equilibrium.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.37 (MSQ):</strong> Outcomes of first-degree price discrimination.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 25 (Monopoly), Section 25.2 "First-Degree Price Discrimination". The monopolist captures the entire surplus, so Profit = Total Surplus and CS = 0.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.43 (NAT):</strong> Profit maximization for a multi-product monopolist.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Concepts are from Hal Varian, Ch. 25 (Monopoly). This requires setting up a profit function with two goods and two prices, and taking partial derivatives with respect to each price to find the maximum.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.47 (NAT):</strong> Profit maximization with third-degree price discrimination.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 25 (Monopoly), Section 25.4 "Third-Degree Price Discrimination". The key is to set MR=MC in each market separately.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.56 (NAT):</strong> Calculating the Lerner Index (measure of market power).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 25 (Monopoly), Section 25.6 "Markup Pricing". The Lerner Index (P-MC)/P equals 1/|ε|.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Production & Cost">
+                <p><strong>Primary Book:</strong> Hal Varian, Chapters 19-22.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-blue-100">
+                     <div class="pt-2"><p><strong>Q.14 (MCQ):</strong> Testing for returns to scale in a Cobb-Douglas function.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 19 (Technology), Section 19.3 "Returns to Scale". The sum of exponents in a Cobb-Douglas function determines the returns to scale.</p></div></div>
+                     <div class="pt-2"><p><strong>Q.20 (MCQ):</strong> Identifying a valid cost function form.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 21 (Cost Minimization). A cost function expresses cost as C(w,r,Q). Option A is an isocost line, not a cost function.</p></div></div>
+                     <div class="pt-2"><p><strong>Q.25 (MCQ):</strong> Relationship between linear AVC and the MC curve.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 22 (Cost Curves), Section 22.4 "Marginal Cost". If AVC=aQ, TVC=aQ², so MC=d(TVC)/dQ=2aQ. MC is linear with twice the slope of AVC.</p></div></div>
+                     <div class="pt-2"><p><strong>Q.38 (MSQ):</strong> Conditions for diseconomies of scale (Cost elasticity, MC vs AC).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 22 (Cost Curves), Section 22.6. Diseconomies of scale implies average cost is increasing, which occurs when MC > AC. Cost elasticity with respect to output is > 1.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Game Theory">
+                <p><strong>Primary Book:</strong> Hal Varian, Chapters 29-30.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-blue-100">
+                    <div class="pt-2"><p><strong>Q.48 (NAT):</strong> Finding the Nash Equilibrium and sum of payoffs in a simultaneous game.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Hal Varian, Ch. 29 (Game Theory), Section 29.2 "Nash Equilibrium". The method involves finding the best response for each player given the other's strategy.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Market Failure">
+                 <p><strong>Primary Book:</strong> Hal Varian, Chapters 36-37.</p>
+                 <div class="mt-2 pl-4 space-y-3 divide-y divide-blue-100">
+                    <div class="pt-2"><p><strong>Q.39 (MSQ):</strong> Causes of market failure (Externalities, Public Goods, Market Power).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Varian covers these in Ch. 36 (Public Goods), Ch. 37 (Externalities), and Ch. 25 (Monopoly, as a source of inefficiency).</p></div></div>
+                 </div>
+            </div>
+            
+            <!-- Macroeconomics Data -->
+            <div data-topic="National Income">
+                <p><strong>Primary Book:</strong> Mankiw, Ch 2-3.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-green-100">
+                    <div class="pt-2"><p><strong>Q.7 (MCQ):</strong> Difference between GDP and GNP.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 2, Section 2-1 "Gross Domestic Product", specifically the box "GDP versus GNP".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.8 (MCQ):</strong> Difference between CPI and GDP Deflator.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 2, Section 2-2 "Measuring the Cost of Living", specifically the subsection "The GDP Deflator versus the CPI".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.19 (MCQ):</strong> Definition of investment in national income accounts.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 2, Section 2-1, subsection on "The Components of Expenditure". Investment is spending on new capital goods. Buying an old house is a transfer of assets.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.49 (NAT):</strong> Calculating the velocity of money (using Quantity Theory of Money identity).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 5 (Money and Inflation), Section 5-1 "The Quantity Theory of Money". The question uses the identity MV=PY.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.59 (NAT):</strong> Calculating private saving from national income accounts identity.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 3 (National Income), Section 3-1. Private Saving is defined as disposable income minus consumption, S = (Y-T)-C.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Closed Economy Models">
+                <p><strong>Primary Book:</strong> Mankiw, Ch 10-11.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-green-100">
+                    <div class="pt-2"><p><strong>Q.18 (MCQ):</strong> Effect of increased money supply in the IS-LM model.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 11 (Aggregate Demand II), Section 11-2 "How Monetary Policy Shifts the LM Curve".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.26 (MCQ):</strong> Definition and implication of a liquidity trap.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 11, mentioned in the context of the LM curve becoming flat at very low interest rates, rendering monetary policy ineffective.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.34 (MSQ):</strong> Shocks that affect the IS curve.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 11, Section 11-1 discusses shocks to the goods market (consumer confidence, government purchases) that shift the IS curve.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.36 (MSQ):</strong> Principles of the classical school (vertical LRAS).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 10 (Aggregate Demand I), Section 10-2 "Aggregate Supply". The vertical LRAS is a cornerstone of classical theory.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Open Economy">
+                <p><strong>Primary Book:</strong> Mankiw, Ch. 13 (The Open Economy Revisited).</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-green-100">
+                    <div class="pt-2"><p><strong>Q.35 (MSQ):</strong> Effects of fiscal policy in a small open economy with floating exchange rates (Mundell-Fleming Model).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Mankiw, Ch. 13, Section 13-3 "The Mundell-Fleming Model", specifically the subsection on fiscal policy under floating exchange rates.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Growth Models">
+                <p><strong>Primary Book:</strong> Dornbusch & Fischer, Ch. 3.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-green-100">
+                    <div class="pt-2"><p><strong>Q.44 (NAT):</strong> Calculating the ICOR (Incremental Capital Output Ratio), related to Harrod-Domar model.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> While Mankiw focuses on Solow, the ICOR (s/g) is a key component of the Harrod-Domar model, discussed in Dornbusch & Fischer, Ch. 3.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Behavioural Func.">
+                 <p><strong>Primary Book:</strong> Chiang & Wainwright, Ch. 16.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-green-100">
+                    <div class="pt-2"><p><strong>Q.53 (NAT):</strong> A simple dynamic model of income determination based on previous year's income.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> This is a first-order difference equation problem. The setup is from Macroeconomics, but the solution method is in Chiang & Wainwright, Ch. 16 "Discrete Time: First-Order Difference Equations".</p></div></div>
+                </div>
+            </div>
+
+            <!-- Statistics Data -->
+            <div data-topic="Probability Theory">
+                <p><strong>Primary Book:</strong> S.C. Gupta, Ch 2-8.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-yellow-100">
+                    <div class="pt-2"><p><strong>Q.1 (MCQ):</strong> Relationship of mean, median, mode for skewed distributions.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 4 "Moments, Skewness and Kurtosis".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.4 (MCQ):</strong> Identifying a non-graphical data representation (Pictogram).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 2 "Classification and Tabulation".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.33 (MSQ):</strong> Properties of AM-GM, correlation, real line, and chi-squared distribution.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, covering AM-GM (Ch. 3), Correlation (Ch. 10), and Chi-Square distribution (Vol II, Ch. 5).</p></div></div>
+                    <div class="pt-2"><p><strong>Q.42 (NAT):</strong> Probability of drawing specific cards without replacement.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 6 "Probability". This involves combinations or conditional probability.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.45 (NAT):</strong> Probability of successive independent events (coin toss).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 6, section on "Independent Events".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.54 (NAT):</strong> Application of Bayes' Theorem (conditional probability).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 6, section on "Bayes' Theorem".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.55 (NAT):</strong> Expected value for a geometric distribution.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 8, "Geometric Distribution". Expected number of trials is 1/p.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.58 (NAT):</strong> Calculation of harmonic mean (average price with equal expenditure).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 3, section on "Harmonic Mean".</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Correlation & Regression">
+                <p><strong>Primary Book:</strong> Gujarati, Part 1 (Ch 1-8).</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-yellow-100">
+                    <div class="pt-2"><p><strong>Q.15 (MCQ):</strong> Condition leading to negative R-squared.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Gujarati, Ch. 6, Section 6-5 "R-squared and Adjusted R-squared". Discusses that adjusted R-squared can be negative.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.31 (MSQ):</strong> Relationship between R-squared and Adjusted R-squared.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Gujarati, Ch. 6, Section 6-5 "R-squared and Adjusted R-squared".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.32 (MSQ):</strong> Identifying statements that are NOT CLRM assumptions.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Gujarati, Ch. 3, Section 3-2 "Assumptions of the Classical Linear Regression Model".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.41 (NAT):</strong> Calculating the correlation coefficient from summary statistics.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol I, Ch. 10 "Correlation". This question requires the direct formula for Pearson's correlation coefficient.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Hypothesis Testing">
+                <p><strong>Primary Book:</strong> S.C. Gupta, Vol II, Ch. 4.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-yellow-100">
+                   <div class="pt-2"><p><strong>Q.11 (MCQ):</strong> Definition of the area of non-rejection (1 - alpha).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol II, Ch. 4 "Procedure of Testing Hypothesis", defines critical region (rejection area) and acceptance region.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.13 (MCQ):</strong> Definition of the power of a test (1 - beta).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol II, Ch. 4, section on "The Power of a Test".</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Math. Statistics">
+                <p><strong>Primary Book:</strong> S.C. Gupta, Vol II, Ch. 3.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-yellow-100">
+                    <div class="pt-2"><p><strong>Q.12 (MCQ):</strong> Definition of a consistent estimator.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> S.C. Gupta, Vol II, Ch. 3 "Theory of Estimation", section on "Consistency".</p></div></div>
+                </div>
+            </div>
+
+            <!-- Indian Economy Data -->
+            <div data-topic="Banking & Finance">
+                <p><strong>Primary Book:</strong> Uma Kapila, Sections IV & V.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-red-100">
+                    <div class="pt-2"><p><strong>Q.2 (MCQ):</strong> Narasimham Committee on financial system reforms (1991).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section V "Economic Reforms", Chapter on "Financial Sector Reforms".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.3 (MCQ):</strong> RBI's inflation targeting range.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section V, Chapter on "Monetary and Credit Policy".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.10 (MCQ):</strong> Identifying which is not a function of the RBI.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section IV "Money, Banking...", Chapter on "Banking and Monetary Structure".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.16 (MCQ):</strong> Relationship between CRR and the money multiplier.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section V, Chapter on "Monetary and Credit Policy".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.17 (MCQ):</strong> How PSUs contribute to the government exchequer.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, covered in chapters related to the Public Sector and Fiscal Policy.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.28 (MCQ):</strong> Definition of tax buoyancy.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section V, Chapter on "Fiscal Policy and Reforms".</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Social Dev. & Labour">
+                <p><strong>Primary Book:</strong> Uma Kapila, relevant chapters.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-red-100">
+                   <div class="pt-2"><p><strong>Q.27 (MCQ):</strong> Origin of the Mid-day meal scheme.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> This is a specific general knowledge question on policy history, may be mentioned in chapters on Social Sector Development.</p></div></div>
+                    <div class="pt-2"><p><strong>Q.40 (MSQ):</strong> NSS reference periods for measuring unemployment.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section III "Growth, Distributional Issues...", Chapter on "Employment and Unemployment".</p></div></div>
+                    <div class="pt-2"><p><strong>Q.46 (NAT):</strong> Calculating the unemployment rate.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section III, Chapter on "Employment and Unemployment", which defines the labor force and unemployment rate.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Planning">
+                <p><strong>Primary Book:</strong> Uma Kapila, relevant chapters on planning.</p>
+                <div class="mt-2 pl-4 space-y-3 divide-y divide-red-100">
+                    <div class="pt-2"><p><strong>Q.9 (MCQ):</strong> Slogans associated with the Fourth Five Year Plan.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Uma Kapila, Section II "Development Strategies in India", chapter on the relevant five-year plan.</p></div></div>
+                </div>
+            </div>
+
+            <!-- Mathematics Data -->
+            <div data-topic="Calculus">
+                 <p><strong>Primary Book:</strong> Chiang & Wainwright, Ch 6-8.</p>
+                 <div class="mt-2 pl-4 space-y-3 divide-y divide-purple-100">
+                    <div class="pt-2"><p><strong>Q.51 (NAT):</strong> Calculating the derivative of a function (product rule).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Chiang & Wainwright, Ch. 6 "Rules of Differentiation", Section 6.6 covers the product rule.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Linear Algebra">
+                 <p><strong>Primary Book:</strong> Chiang & Wainwright, Ch 4-5.</p>
+                 <div class="mt-2 pl-4 space-y-3 divide-y divide-purple-100">
+                    <div class="pt-2"><p><strong>Q.60 (NAT):</strong> Using properties of determinants (|A⁵| = |A|⁵).</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Chiang & Wainwright, Ch. 5 "Linear Models and Matrix Algebra", Section 5.3 covers properties of determinants.</p></div></div>
+                </div>
+            </div>
+            <div data-topic="Preliminaries">
+                 <p><strong>Primary Book:</strong> Chiang & Wainwright, Ch 10.</p>
+                 <div class="mt-2 pl-4 space-y-3 divide-y divide-purple-100">
+                    <div class="pt-2"><p><strong>Q.52 (NAT):</strong> Calculating the present value of a perpetuity.</p><div class="text-sm text-slate-600 pl-5 mt-1 border-l-2 border-indigo-200"><p class="pl-2"><span class="font-semibold">Book Reference:</span> Chiang & Wainwright, Ch. 10 "Exponential and Logarithmic Functions", this concept is an application of geometric series in calculating present discounted value.</p></div></div>
+                </div>
+            </div>
+
+        </div>
+
+    <script>
+    // --- Data Configuration ---
+    const chartData = {
+        'Microeconomics': {
+            canvasId: 'microTopicChart',
+            color: 'rgba(59, 130, 246, 0.7)',
+            borderColor: '#3b82f6',
+            labels: ['Consumer Theory', 'Market Structure', 'Production & Cost', 'Game Theory', 'Market Failure'],
+            data: [7, 7, 4, 1, 1],
+        },
+        'Statistics': {
+            canvasId: 'statsTopicChart',
+            color: 'rgba(234, 179, 8, 0.7)',
+            borderColor: '#eab308',
+            labels: ['Probability Theory', 'Correlation & Regression', 'Hypothesis Testing', 'Math. Statistics'],
+            data: [8, 4, 2, 1],
+        },
+        'Macroeconomics': {
+            canvasId: 'macroTopicChart',
+            color: 'rgba(34, 197, 94, 0.7)',
+            borderColor: '#22c55e',
+            labels: ['National Income', 'Closed Economy Models', 'Open Economy', 'Growth Models', 'Behavioural Func.'],
+            data: [5, 4, 1, 1, 1],
+        },
+        'Indian Economy': {
+            canvasId: 'indianEcoTopicChart',
+            color: 'rgba(239, 68, 68, 0.7)',
+            borderColor: '#ef4444',
+            labels: ['Banking & Finance', 'Social Dev. & Labour', 'Planning'],
+            data: [6, 3, 1],
+        },
+        'Mathematics': {
+            canvasId: 'mathTopicChart',
+            color: 'rgba(139, 92, 246, 0.7)',
+            borderColor: '#8b5cf6',
+            labels: ['Calculus', 'Linear Algebra', 'Preliminaries'],
+            data: [1, 1, 1],
+        }
+    };
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- View Management ---
+        const views = {
+            main: document.getElementById('mainChartView'),
+            topic: document.getElementById('topicChartView'),
+            pyq: document.getElementById('pyqDetailView')
+        };
+
+        const topicCharts = document.querySelectorAll('.topic-chart');
+        let currentSubject = '';
+        
+        function showView(viewName) {
+            Object.values(views).forEach(v => v.style.display = 'none');
+            views[viewName].style.display = 'block';
+        }
+
+        // --- Chart Initialization ---
+        const chartInstances = {};
+
+        // General options for topic charts
+        const topicChartOptions = {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
+        };
+
+        // 1. Main Subject Chart
+        const weightageChartCtx = document.getElementById('weightageChart').getContext('2d');
+        chartInstances.main = new Chart(weightageChartCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(chartData),
+                datasets: [{
+                    label: '# of Questions',
+                    data: Object.values(chartData).map(d => d.data.reduce((a, b) => a + b, 0)),
+                    backgroundColor: Object.values(chartData).map(d => d.color),
+                    borderColor: Object.values(chartData).map(d => d.borderColor),
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { display: false } } }
+        });
+
+        // 2. Topic Charts (initialized but hidden)
+        for (const subject in chartData) {
+            const d = chartData[subject];
+            const ctx = document.getElementById(d.canvasId).getContext('2d');
+            chartInstances[subject] = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: d.labels, datasets: [{ data: d.data, backgroundColor: d.color, borderColor: d.borderColor, borderWidth: 1, borderRadius: 5 }] },
+                options: topicChartOptions
+            });
+        }
+        
+        // --- Event Handlers ---
+
+        // Click on Main Chart
+        weightageChartCtx.canvas.onclick = (evt) => {
+            const points = chartInstances.main.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                currentSubject = chartInstances.main.data.labels[points[0].index];
+                
+                // Show the correct topic chart
+                topicCharts.forEach(c => c.style.display = 'none');
+                document.getElementById(chartData[currentSubject].canvasId).style.display = 'block';
+                
+                document.getElementById('topicChartHeader').innerText = `Topic Breakdown for ${currentSubject}`;
+                showView('topic');
+            }
+        };
+
+        // Click on any Topic Chart
+        topicCharts.forEach(canvas => {
+            canvas.onclick = (evt) => {
+                const chart = chartInstances[currentSubject];
+                const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                if (points.length) {
+                    const topicName = chart.data.labels[points[0].index];
+                    document.getElementById('pyqHeader').innerText = `PYQs for ${topicName}`;
+                    
+                    const pyqDataElement = document.querySelector(`#pyqData [data-topic="${topicName}"]`);
+                    if (pyqDataElement) {
+                        document.getElementById('pyqListContainer').innerHTML = pyqDataElement.innerHTML;
+                        showView('pyq');
+                    }
+                }
+            };
+        });
+
+        // Back Buttons
+        document.getElementById('backToMainBtn').onclick = () => showView('main');
+        document.getElementById('backToTopicBtn').onclick = () => showView('topic');
+    });
+    </script>
+</body>
+</html>
+
