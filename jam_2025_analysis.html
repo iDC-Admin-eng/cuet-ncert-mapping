@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT JAM Economics 2026 - Study Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .topic-content, .subtopic-content, #topicWeightageDetails {
+            display: none;
+        }
+        .pyq-content {
+            display: none;
+            border-left: 2px solid #3b82f6;
+        }
+        .topic-header, .subtopic-header, .pyq-header, #topicWeightageToggle {
+            cursor: pointer;
+        }
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        .open .arrow {
+            transform: rotate(90deg);
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">IIT JAM Economics 2026</h1>
+            <p class="text-lg text-slate-600 mt-2">Interactive Syllabus & PYQ Dashboard</p>
+        </header>
+
+        <!-- Topic Weightage Analysis -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-center mb-4 text-slate-900">Weightage Analysis (Based on JAM 2025 Paper)</h2>
+            <div class="relative h-96 mb-6">
+                <canvas id="weightageChart"></canvas>
+            </div>
+            
+            <!-- Topic-wise Breakdown Section -->
+            <div class="border-t pt-4">
+                <div id="topicWeightageToggle" class="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg flex justify-between items-center transition-colors">
+                    <h3 class="font-bold text-slate-800">View Topic-wise Weightage Breakdown (Graphical)</h3>
+                    <span class="arrow text-slate-800">&#9654;</span>
+                </div>
+                <div id="topicWeightageDetails" class="mt-4 px-3 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Microeconomics Chart -->
+                    <div class="h-80 relative">
+                        <canvas id="microChart"></canvas>
+                    </div>
+                     <!-- Statistics Chart -->
+                    <div class="h-80 relative">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                    <!-- Macroeconomics Chart -->
+                    <div class="h-80 relative">
+                        <canvas id="macroChart"></canvas>
+                    </div>
+                     <!-- Indian Economy Chart -->
+                    <div class="h-80 relative">
+                        <canvas id="indianEcoChart"></canvas>
+                    </div>
+                    <!-- Mathematics Chart -->
+                    <div class="h-80 relative">
+                        <canvas id="mathChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Syllabus Accordion -->
+        <div class="space-y-4">
+
+            <!-- Microeconomics -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="topic-header p-5 flex justify-between items-center bg-blue-100 border-b border-blue-200">
+                    <h2 class="text-xl font-bold text-blue-800">Microeconomics</h2>
+                    <span class="arrow text-blue-800">&#9654;</span>
+                </div>
+                <div class="topic-content p-5 space-y-3">
+                    <!-- Subtopic: Consumer Theory -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Consumer Theory</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Hal Varian, Chapters 2-6, 8, 15.</p>
+                            <div class="pyq-header p-2 bg-blue-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-blue-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-blue-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.21 (MCQ):</strong> Concept of Quasi-linear utility functions (U = y + f(x)).</p>
+                                <p><strong>Q.22 (MCQ):</strong> Definition of an Engel curve.</p>
+                                <p><strong>Q.23 (MCQ):</strong> Purpose of Revealed Preference theory.</p>
+                                <p><strong>Q.29 (MCQ):</strong> Indifference curve for a 'good' and a 'bad'.</p>
+                                <p><strong>Q.30 (MCQ):</strong> Definition of Marginal Utility.</p>
+                                <p><strong>Q.50 (NAT):</strong> Utility maximization with a Cobb-Douglas utility function (U=xy).</p>
+                                <p><strong>Q.57 (NAT):</strong> Calculating price elasticity from a demand function.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Production and Cost -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Theory of Production and Cost</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Hal Varian, Chapters 19-22.</p>
+                             <div class="pyq-header p-2 bg-blue-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-blue-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-blue-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.14 (MCQ):</strong> Testing for returns to scale in a Cobb-Douglas function.</p>
+                                <p><strong>Q.20 (MCQ):</strong> Identifying a valid cost function form.</p>
+                                <p><strong>Q.25 (MCQ):</strong> Relationship between linear AVC and the MC curve.</p>
+                                <p><strong>Q.38 (MSQ):</strong> Conditions for diseconomies of scale (Cost elasticity, MC vs AC).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Market Structure -->
+                     <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Market Structure</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Hal Varian, Chapters 16, 24-28.</p>
+                            <div class="pyq-header p-2 bg-blue-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-blue-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-blue-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.5 (MCQ):</strong> Shut-down condition for a perfectly competitive firm.</p>
+                                <p><strong>Q.6 (MCQ):</strong> Characteristics of a natural monopoly.</p>
+                                <p><strong>Q.24 (MCQ):</strong> Short-run and Long-run equilibrium in monopolistic competition.</p>
+                                <p><strong>Q.37 (MSQ):</strong> Outcomes of first-degree price discrimination.</p>
+                                <p><strong>Q.43 (NAT):</strong> Profit maximization for a multi-product monopolist.</p>
+                                <p><strong>Q.47 (NAT):</strong> Profit maximization with third-degree price discrimination.</p>
+                                <p><strong>Q.56 (NAT):</strong> Calculating the Lerner Index (measure of market power).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Game Theory -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Game Theory</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Hal Varian, Chapters 29-30.</p>
+                             <div class="pyq-header p-2 bg-blue-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-blue-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-blue-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                 <p><strong>Q.48 (NAT):</strong> Finding the Nash Equilibrium and sum of payoffs in a simultaneous game.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Public Goods and Market Failure -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Public Goods & Market Failure</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Hal Varian, Chapters 37-38.</p>
+                             <div class="pyq-header p-2 bg-blue-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-blue-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-blue-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                 <p><strong>Q.39 (MSQ):</strong> Causes of market failure (Externalities, Public Goods, Market Power).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Macroeconomics -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="topic-header p-5 flex justify-between items-center bg-green-100 border-b border-green-200">
+                    <h2 class="text-xl font-bold text-green-800">Macroeconomics</h2>
+                    <span class="arrow text-green-800">&#9654;</span>
+                </div>
+                <div class="topic-content p-5 space-y-3">
+                     <!-- Subtopic: National Income -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">National Income Accounting</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Mankiw, Ch 2; Dornbusch, Ch 2.</p>
+                             <div class="pyq-header p-2 bg-green-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-green-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-green-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.7 (MCQ):</strong> Difference between GDP and GNP.</p>
+                                <p><strong>Q.8 (MCQ):</strong> Difference between CPI and GDP Deflator.</p>
+                                <p><strong>Q.19 (MCQ):</strong> Definition of investment in national income accounts.</p>
+                                <p><strong>Q.49 (NAT):</strong> Calculating the velocity of money (using Quantity Theory of Money identity).</p>
+                                <p><strong>Q.59 (NAT):</strong> Calculating private saving from national income accounts identity.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Closed Economy Models -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Business Cycles (Closed Economy)</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Mankiw, Ch 11-12 (IS-LM); Dornbusch, Ch 10-12.</p>
+                             <div class="pyq-header p-2 bg-green-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-green-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-green-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.18 (MCQ):</strong> Effect of increased money supply in the IS-LM model.</p>
+                                <p><strong>Q.26 (MCQ):</strong> Definition and implication of a liquidity trap.</p>
+                                <p><strong>Q.34 (MSQ):</strong> Shocks that affect the IS curve.</p>
+                                <p><strong>Q.36 (MSQ):</strong> Principles of the classical school (vertical LRAS).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Open Economy Models -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Business Cycles (Open Economy)</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Mankiw, Ch 6, 13 (Mundell-Fleming).</p>
+                             <div class="pyq-header p-2 bg-green-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-green-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-green-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.35 (MSQ):</strong> Effects of fiscal policy in a small open economy with floating exchange rates (Mundell-Fleming Model).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Growth Models -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Growth Models</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Mankiw, Ch 8-9 (Solow).</p>
+                             <div class="pyq-header p-2 bg-green-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-green-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-green-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                 <p><strong>Q.44 (NAT):</strong> Calculating the ICOR (Incremental Capital Output Ratio), related to Harrod-Domar model.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Behavioral Functions -->
+                     <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Behavioural and Technological Functions</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Mankiw, Ch 17-18.</p>
+                             <div class="pyq-header p-2 bg-green-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-green-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-green-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                 <p><strong>Q.53 (NAT):</strong> A simple dynamic model of income determination based on previous year's income.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+             <!-- Statistics for Economics -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="topic-header p-5 flex justify-between items-center bg-yellow-100 border-b border-yellow-200">
+                    <h2 class="text-xl font-bold text-yellow-800">Statistics for Economics</h2>
+                    <span class="arrow text-yellow-800">&#9654;</span>
+                </div>
+                <div class="topic-content p-5 space-y-3">
+                     <!-- Subtopic: Probability Theory -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Probability Theory</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> S.C. Gupta, Ch 2-7.</p>
+                             <div class="pyq-header p-2 bg-yellow-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-yellow-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-yellow-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.1 (MCQ):</strong> Relationship of mean, median, mode for skewed distributions.</p>
+                                <p><strong>Q.4 (MCQ):</strong> Identifying a non-graphical data representation (Pictogram).</p>
+                                <p><strong>Q.33 (MSQ):</strong> Properties of AM-GM, correlation, real line, and chi-squared distribution.</p>
+                                <p><strong>Q.42 (NAT):</strong> Probability of drawing specific cards without replacement.</p>
+                                <p><strong>Q.45 (NAT):</strong> Probability of successive independent events (coin toss).</p>
+                                <p><strong>Q.54 (NAT):</strong> Application of Bayes' Theorem (conditional probability).</p>
+                                <p><strong>Q.55 (NAT):</strong> Expected value for a geometric distribution.</p>
+                                <p><strong>Q.58 (NAT):</strong> Calculation of harmonic mean (average price with equal expenditure).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Mathematical Statistics -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Mathematical Statistics</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> S.C. Gupta, Ch 14, 17.</p>
+                             <div class="pyq-header p-2 bg-yellow-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-yellow-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-yellow-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.12 (MCQ):</strong> Definition of a consistent estimator.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Hypothesis Testing -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Hypothesis Testing</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                            <p class="text-sm text-slate-600"><strong>Primary Book:</strong> S.C. Gupta, Ch 18.</p>
+                             <div class="pyq-header p-2 bg-yellow-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-yellow-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-yellow-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.11 (MCQ):</strong> Definition of the area of non-rejection (1 - alpha).</p>
+                                <p><strong>Q.13 (MCQ):</strong> Definition of the power of a test (1 - beta).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Correlation & Regression -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Correlation & Regression</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Gujarati, Part 1 (Ch 1-8).</p>
+                             <div class="pyq-header p-2 bg-yellow-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-yellow-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-yellow-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.15 (MCQ):</strong> Condition leading to negative R-squared.</p>
+                                <p><strong>Q.31 (MSQ):</strong> Relationship between R-squared and Adjusted R-squared.</p>
+                                <p><strong>Q.32 (MSQ):</strong> Identifying statements that are NOT CLRM assumptions.</p>
+                                <p><strong>Q.41 (NAT):</strong> Calculating the correlation coefficient from summary statistics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indian Economy -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="topic-header p-5 flex justify-between items-center bg-red-100 border-b border-red-200">
+                    <h2 class="text-xl font-bold text-red-800">Indian Economy</h2>
+                    <span class="arrow text-red-800">&#9654;</span>
+                </div>
+                <div class="topic-content p-5 space-y-3">
+                    <!-- Subtopic: Banking & Finance -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Banking, Finance & Macro Policies</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Uma Kapila, Sections IV & V.</p>
+                             <div class="pyq-header p-2 bg-red-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-red-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-red-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.2 (MCQ):</strong> Narasimham Committee on financial system reforms (1991).</p>
+                                <p><strong>Q.3 (MCQ):</strong> RBI's inflation targeting range.</p>
+                                <p><strong>Q.10 (MCQ):</strong> Identifying which is not a function of the RBI.</p>
+                                <p><strong>Q.16 (MCQ):</strong> Relationship between CRR and the money multiplier.</p>
+                                <p><strong>Q.17 (MCQ):</strong> How PSUs contribute to the government exchequer.</p>
+                                <p><strong>Q.28 (MCQ):</strong> Definition of tax buoyancy.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Planning -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Planning and Indian Development</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Uma Kapila, relevant chapters on planning.</p>
+                             <div class="pyq-header p-2 bg-red-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-red-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-red-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.9 (MCQ):</strong> Slogans associated with the Fourth Five Year Plan.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Social Development & Labour -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Inequalities, Poverty & Labour Market</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Uma Kapila, relevant chapters.</p>
+                             <div class="pyq-header p-2 bg-red-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-red-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-red-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.27 (MCQ):</strong> Origin of the Mid-day meal scheme.</p>
+                                <p><strong>Q.40 (MSQ):</strong> NSS reference periods for measuring unemployment.</p>
+                                <p><strong>Q.46 (NAT):</strong> Calculating the unemployment rate.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematics for Economics -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="topic-header p-5 flex justify-between items-center bg-purple-100 border-b border-purple-200">
+                    <h2 class="text-xl font-bold text-purple-800">Mathematics for Economics</h2>
+                    <span class="arrow text-purple-800">&#9654;</span>
+                </div>
+                <div class="topic-content p-5 space-y-3">
+                     <!-- Subtopic: Calculus -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Differential Calculus</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Chiang & Wainwright, Ch 6-8.</p>
+                             <div class="pyq-header p-2 bg-purple-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-purple-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-purple-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.51 (NAT):</strong> Calculating the derivative of a function (product rule).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Subtopic: Linear Algebra -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Linear Algebra</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Chiang & Wainwright, Ch 4-5.</p>
+                             <div class="pyq-header p-2 bg-purple-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-purple-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-purple-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.60 (NAT):</strong> Using properties of determinants (|A⁵| = |A|⁵).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subtopic: Preliminaries & Functions -->
+                    <div>
+                        <div class="subtopic-header p-3 bg-slate-100 rounded-lg flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-700">Preliminaries & Functions</h3>
+                            <span class="arrow text-slate-700">&#9654;</span>
+                        </div>
+                        <div class="subtopic-content pt-3 pl-4 space-y-2">
+                             <p class="text-sm text-slate-600"><strong>Primary Book:</strong> Chiang & Wainwright, Ch 2, 9.</p>
+                             <div class="pyq-header p-2 bg-purple-50 rounded flex justify-between items-center">
+                                <h4 class="font-medium text-purple-700">Relevant PYQs (2025)</h4>
+                                <span class="arrow text-purple-700">&#9654;</span>
+                            </div>
+                            <div class="pyq-content mt-2 pl-4 space-y-2">
+                                <p><strong>Q.52 (NAT):</strong> Calculating the present value of a perpetuity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Accordion functionality
+            const headers = document.querySelectorAll('.topic-header, .subtopic-header, .pyq-header, #topicWeightageToggle');
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('open');
+                    let content;
+                    if (header.id === 'topicWeightageToggle') {
+                        content = document.getElementById('topicWeightageDetails');
+                    } else {
+                        content = header.nextElementSibling;
+                    }
+                    if (content.style.display === 'block' || content.style.display === 'grid') {
+                        content.style.display = 'none';
+                    } else {
+                         if (header.id === 'topicWeightageToggle') {
+                            content.style.display = 'grid';
+                        } else {
+                             content.style.display = 'block';
+                        }
+                    }
+                });
+            });
+
+            // --- CHART CONFIGURATION ---
+
+            // General options for all topic charts to keep them clean
+            const topicChartOptions = {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        grid: { display: false }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        font: { size: 16, weight: 'bold' },
+                        padding: { bottom: 15 }
+                    }
+                }
+            };
+
+            // 1. Main Subject Weightage Chart
+            new Chart(document.getElementById('weightageChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Microeconomics', 'Statistics', 'Macroeconomics', 'Indian Economy', 'Mathematics'],
+                    datasets: [{
+                        label: '# of Questions',
+                        data: [20, 15, 12, 10, 3],
+                        backgroundColor: ['rgba(59, 130, 246, 0.7)','rgba(234, 179, 8, 0.7)','rgba(34, 197, 94, 0.7)','rgba(239, 68, 68, 0.7)','rgba(139, 92, 246, 0.7)'],
+                        borderColor: ['#3b82f6','#eab308','#22c55e','#ef4444','#8b5cf6'],
+                        borderWidth: 1,
+                        borderRadius: 8,
+                    }]
+                },
+                options: { ...topicChartOptions.options, ...{
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Subject-wise Question Distribution', font: { size: 18, weight: 'bold' }, padding: { bottom: 20 } }
+                    }}
+                }
+            });
+
+            // 2. Microeconomics Topic Chart
+            new Chart(document.getElementById('microChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Consumer Theory', 'Market Structure', 'Production & Cost', 'Game Theory', 'Market Failure'],
+                    datasets: [{
+                        data: [7, 7, 4, 1, 1],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { ...topicChartOptions.plugins.title, text: 'Microeconomics Topics' } } }
+            });
+
+            // 3. Statistics Topic Chart
+            new Chart(document.getElementById('statsChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Probability Theory', 'Correlation & Regression', 'Hypothesis Testing', 'Math. Statistics'],
+                    datasets: [{
+                        data: [8, 4, 2, 1],
+                        backgroundColor: 'rgba(234, 179, 8, 0.7)',
+                        borderColor: '#eab308',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { ...topicChartOptions.plugins.title, text: 'Statistics Topics' } } }
+            });
+
+            // 4. Macroeconomics Topic Chart
+            new Chart(document.getElementById('macroChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['National Income', 'Closed Economy Models', 'Open Economy', 'Growth Models', 'Behavioural Func.'],
+                    datasets: [{
+                        data: [5, 4, 1, 1, 1],
+                        backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                        borderColor: '#22c55e',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { ...topicChartOptions.plugins.title, text: 'Macroeconomics Topics' } } }
+            });
+
+            // 5. Indian Economy Topic Chart
+            new Chart(document.getElementById('indianEcoChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Banking & Finance', 'Social Dev. & Labour', 'Planning'],
+                    datasets: [{
+                        data: [6, 3, 1],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { ...topicChartOptions.plugins.title, text: 'Indian Economy Topics' } } }
+            });
+            
+            // 6. Mathematics Topic Chart
+            new Chart(document.getElementById('mathChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Calculus', 'Linear Algebra', 'Preliminaries'],
+                    datasets: [{
+                        data: [1, 1, 1],
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                        borderColor: '#8b5cf6',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: { ...topicChartOptions, plugins: { ...topicChartOptions.plugins, title: { ...topicChartOptions.plugins.title, text: 'Mathematics Topics' } } }
+            });
+
+        });
+    </script>
+</body>
+</html>
+
